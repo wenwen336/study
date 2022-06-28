@@ -10,7 +10,7 @@ contract Bob {
     uint256 private _maxSupply;
     address public owner;
     mapping (address=> uint)public _balances; //铸币余额映射
-    event Sent(address from, address to, uint value);//地址余额查询
+    event Sent(address from, address to, uint value);// 声明 一个事件 ，客户端可以来监听该事件
 
     //构造函数，初始化属性，将这个地址赋值给管理者
     constructor(string memory name,string memory symbol,uint256 maxSupply)public {
