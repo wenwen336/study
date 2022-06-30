@@ -10,7 +10,9 @@ contract Bob {
     uint256 private _maxSupply;
     address public owner;
     mapping (address=> uint)public _balances; //铸币余额映射
-    event Sent(address from, address to, uint value);// 声明 一个事件 ，客户端可以来监听该事件
+   mapping(address => mapping(address => uint256)) public allowance;
+    event Approval(address indexed owner, address indexed to, uint256 value);
+    
 
     //构造函数，初始化属性，将这个地址赋值给管理者
     constructor(string memory name,string memory symbol,uint256 maxSupply)public {
@@ -54,12 +56,16 @@ contract Bob {
    function mint(address to, uint256 amount) public onlyOwner {
         require(totalSupply() + amount <= _maxSupply, "Over maxSupply");
         _totalSupply +=amount;
-        _balances[to] += amount;
-
+        _balances[to] += amount
         
-    
-        
-    } 
+    }
+     //代币授权,被授权方可以支配授权方的amount数量的代币。
+    function approve(address to, uint amount) public returns (bool) {
+        allowance[msg.sender][to] = amount;
+        emit Approval(msg.sender, to, amount);
+        return true;
+    }
+    //实现转账功能，调用方扣除amount数量代币，接收方增加相应代币。
     function transfer(address to,uint256 amount) public returns (bool){
         address from =msg.sender;
         uint256 fromBalance=_balances[from];
